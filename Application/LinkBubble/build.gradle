@@ -1,13 +1,3 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url 'https://maven.fabric.io/public' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'io.fabric.tools:gradle:1.19.0'
-    }
-}
 
 // Manifest version information!
 def versionMajor = 1
@@ -16,7 +6,6 @@ def versionPatch = 58
 def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
 apply plugin:'com.android.application'
-apply plugin: 'io.fabric'
 
 boolean isRelease = false;
 for (int i = 0; i < project.gradle.startParameter.taskNames.size(); i++) {
@@ -27,19 +16,20 @@ for (int i = 0; i < project.gradle.startParameter.taskNames.size(); i++) {
 }
 
 repositories {
+    google()
     mavenCentral()
-    maven { url 'https://maven.fabric.io/public' }
 }
 
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 def buildTime = new Date().format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone("UTC"))
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdk 34
+    namespace 'com.linkbubble'
+
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 22
+        minSdkVersion 21
+        targetSdkVersion 34
 
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
@@ -94,29 +84,26 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:22.2.0'
-    compile "com.android.support:appcompat-v7:22.2.0"
-    compile 'com.android.support:palette-v7:22.2.0'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
-    compile 'com.android.support:design:22.2.0'
-    compile 'se.emilsjolander:stickylistheaders:2.1.2'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
-        transitive = true;
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.palette:palette:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'se.emilsjolander:stickylistheaders:2.7.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.timehop.stickyheadersrecyclerview:library:0.4.3@aar'
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    implementation 'com.squareup:otto:1.3.8'
+    implementation files('libs/picasso-2.1.1.jar')
+    implementation files('libs/jsoup-1.7.3.jar')
+    implementation files('libs/slf4j-android-1.5.8.jar')
+}
+
+task showVersion {
+    doLast {
+        println buildscript.configurations.classpath.resolvedConfiguration.firstLevelModuleDependencies.moduleVersion
     }
-    compile 'com.squareup.retrofit:retrofit:1.5.0'
-    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.0@aar'
-    compile 'com.jakewharton:butterknife:7.0.0'
-    compile 'com.squareup:otto:1.3.8'
-    compile files('libs/picasso-2.1.1.jar')
-    compile files('libs/jsoup-1.7.3.jar')
-    compile files('libs/slf4j-android-1.5.8.jar')
-    //compile project(':Libraries:ViewPagerIndicator:library')
 }
-
-task showVersion << {
-    println buildscript.configurations.classpath.resolvedConfiguration.firstLevelModuleDependencies.moduleVersion
-}
-
-crashlytics.verboseGradlePlugin = true
 
 clean.dependsOn showVersion
