@@ -1,11 +1,15 @@
 buildscript {
     repositories {
+        // Try Aliyun mirrors first (faster in some regions)
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
         google()
         mavenCentral()
         // maven { url 'https://maven.fabric.io/public' }  // Fabric is deprecated
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath 'com.android.tools.build:gradle:4.2.2'
         // classpath 'io.fabric.tools:gradle:1.19.0'  // Fabric is deprecated
     }
 }
@@ -28,6 +32,10 @@ for (int i = 0; i < project.gradle.startParameter.taskNames.size(); i++) {
 }
 
 repositories {
+    // Try Aliyun mirrors first (faster in some regions)
+    maven { url 'https://maven.aliyun.com/repository/google' }
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    maven { url 'https://maven.aliyun.com/repository/central' }
     google()
     mavenCentral()
     // maven { url 'https://maven.fabric.io/public' }  // Fabric is deprecated
